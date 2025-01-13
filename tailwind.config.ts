@@ -12,6 +12,10 @@ export default {
   theme: {
     extend: {
       colors: {
+        "first-gray-color": "#D9D9D9",
+        "second-gray-color": "#9F9F9F",
+
+        "first-blue-color": "#0760FB",
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
