@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.custom-input .MuiInputBase-root {
+  height: 60px; /* Adjust input height */
+}
+
+.custom-popper .MuiPaper-root {
+  position: absolute;
+  top:-300;
+  width: 500px; /* Adjust popper width */
+  height: 400px; /* Adjust popper height */
+  overflow-y: auto; /* Add scrolling for overflow */
+}

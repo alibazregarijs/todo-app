@@ -1,23 +1,26 @@
-import React, { useState } from 'react';
-import { 
-  Modal, 
-  Box, 
-  Typography, 
-  TextField, 
-  Button, 
-  ThemeProvider, 
-  createTheme 
-} from '@mui/material';
+import React, { useState } from "react";
+import {
+  Modal,
+  Box,
+  Typography,
+  TextField,
+  Button,
+  ThemeProvider,
+  createTheme,
+} from "@mui/material";
+import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
+import { Dayjs } from "dayjs";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 // Create a custom theme with the specified colors
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#0760FB', // first-blue-color
+      main: "#0760FB", // first-blue-color
     },
     grey: {
-      100: '#D9D9D9', // first-gray-color
-      200: '#9F9F9F', // second-gray-color
+      100: "#D9D9D9", // first-gray-color
+      200: "#9F9F9F", // second-gray-color
     },
   },
 });
@@ -28,77 +31,115 @@ interface CustomModalProps {
 }
 
 const CustomModal: React.FC<CustomModalProps> = ({ open, onClose }) => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [startTime, setStartTime] = useState<Dayjs | null>(null);
+  const [endTime, setEndTime] = useState<Dayjs | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle form submission here
-    console.log('Submitted:', { title, description });
+    console.log("Submitted:", { title, description, startTime, endTime });
     onClose();
   };
 
   return (
     <ThemeProvider theme={theme}>
-      <Modal
-        open={open}
-        onClose={onClose}
-        aria-labelledby="modal-title"
-        aria-describedby="modal-description"
-      >
-        <Box
-          sx={{
-            position: 'absolute',
-            top: '60%',
-            left: '15%',
-            transform: 'translate(-50%, -50%)',
-            width: 300,
-            bgcolor: 'grey.100',
-            border: '2px solid',
-            borderColor: 'grey.200',
-            boxShadow: 24,
-            p: 4,
-            borderRadius: 2,
-          }}
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <Modal
+          open={open}
+          onClose={onClose}
+          aria-labelledby="modal-title"
+          aria-describedby="modal-description"
         >
-          <Typography id="modal-title" variant="h6" component="h2" gutterBottom>
-            Add New Item
-          </Typography>
-          <form onSubmit={handleSubmit}>
-            <TextField
-              fullWidth
-              label="Title"
-              variant="outlined"
-              margin="normal"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-            />
-            <TextField
-              fullWidth
-              label="Description"
-              variant="outlined"
-              margin="normal"
-              multiline
-              rows={4}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              required
-            />
-            <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
-              <Button onClick={onClose} sx={{ mr: 1 }}>
-                Cancel
-              </Button>
-              <Button type="submit" variant="contained" color="primary">
-                Submit
-              </Button>
-            </Box>
-          </form>
-        </Box>
-      </Modal>
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: 400,
+              bgcolor: "grey.100",
+              border: "2px solid",
+              borderColor: "grey.200",
+              boxShadow: 24,
+              p: 4,
+              borderRadius: 2,
+            }}
+          >
+            <Typography
+              id="modal-title"
+              variant="h6"
+              component="h2"
+              gutterBottom
+            >
+              Add New Item
+            </Typography>
+            <form onSubmit={handleSubmit}>
+              <TextField
+                fullWidth
+                label="Title"
+                variant="outlined"
+                margin="normal"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
+              />
+              <TextField
+                fullWidth
+                label="Description"
+                variant="outlined"
+                margin="normal"
+                multiline
+                rows={4}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                required
+              />
+              <DateTimePicker
+                label="Start Time"
+                value={startTime}
+                onChange={(newValue) => setStartTime(newValue)}
+                slotProps={{
+                  textField: {
+                    fullWidth: true,
+                    margin: "normal",
+                    required: true,
+                  },
+                  popper: {
+                    className: "custom-popper",
+                  },
+                }}
+              />
+              <DateTimePicker
+                label="End Time"
+                value={endTime}
+                onChange={(newValue) => setEndTime(newValue)}
+                slotProps={{
+                  textField: {
+                    fullWidth: true,
+                    margin: "normal",
+                    required: true,
+                  },
+                  popper: {
+                    className: "custom-popper",
+                  },
+                }}
+              />
+              <Box sx={{ mt: 2, display: "flex", justifyContent: "flex-end" }}>
+                <Button onClick={onClose} sx={{ mr: 1 }}>
+                  Cancel
+                </Button>
+                <Button type="submit" variant="contained" color="primary">
+                  Submit
+                </Button>
+              </Box>
+            </form>
+          </Box>
+        </Modal>
+      </LocalizationProvider>
     </ThemeProvider>
   );
 };
 
 export default CustomModal;
-

@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useTransition } from "react";
 import TodoItem from "./TodoItem";
 import axios from "axios";
-import {type Todo} from "@/index"
+import { type Todo } from "@/index";
 
 const filters = ["All", "Open", "Closed", "Archived"];
 
@@ -22,8 +22,6 @@ export const ListingTodo = () => {
         const allTodos = response.data.data;
         setTodos(allTodos); // Store all todos
 
-        // Calculate the counts for each filter once and store them
-
         // Filter todos initially when data is fetched
         filterTodos("All", allTodos);
       } catch (error) {
@@ -35,22 +33,23 @@ export const ListingTodo = () => {
     fetchData(); // Fetch data once on mount
   }, []); // Empty dependency array to run once on mount
 
+  const applyFilter = (filter: string, todos: Todo[]): Todo[] => {
+    switch (filter) {
+      case "Open":
+        return todos.filter((todo) => !todo.is_completed);
+      case "Closed":
+        return todos.filter((todo) => todo.is_completed);
+      case "Archived":
+        return todos.filter((todo) => todo.is_archived);
+      default:
+        return todos; // "All" or any unrecognized filter
+    }
+  };
+
   const filterTodos = (filter: string, todos: Todo[]) => {
     startTransition(() => {
-      let filtered = todos;
-
-      // Apply filtering logic based on the active filter
-      if (filter === "All") {
-        filtered = todos;
-      } else if (filter === "Open") {
-        filtered = todos.filter((todo: Todo) => !todo.is_completed);
-      } else if (filter === "Closed") {
-        filtered = todos.filter((todo: Todo) => todo.is_completed);
-      } else if (filter === "Archived") {
-        filtered = todos.filter((todo: Todo) => todo.is_archived); // Assuming archived is a field
-      }
-
-      setFilteredTodos(filtered); // Set filtered todos and limit to 4
+      const filtered = applyFilter(filter, todos);
+      setFilteredTodos(filtered);
     });
   };
 
@@ -61,22 +60,12 @@ export const ListingTodo = () => {
     }
   };
 
-  // Use the pre-calculated counts for each filter
   const getCountForFilter = (filter: string) => {
-    console.log(filter, "sssss");
-    if (filter === "All") {
-      return todos.length;
-    } else if (filter === "Open") {
-      return todos.filter((todo: Todo) => !todo.is_completed).length; // Open means is_completed is false
-    } else if (filter === "Closed") {
-      return todos.filter((todo: Todo) => todo.is_completed).length; // Closed means is_completed is true
-    } else if (filter === "Archived") {
-      return todos.filter((todo: Todo) => todo.is_archived).length;
-    }
-    return 0;
+    const filtered = applyFilter(filter, todos);
+    return filtered.length;
   };
 
-  const checkItem = async (id: string,is_completed: boolean) => {
+  const checkItem = async (id: string, is_completed: boolean) => {
     todos
       .filter((todo: Todo) => todo._id === id)
       .map((todo: Todo) => {
@@ -135,7 +124,7 @@ export const ListingTodo = () => {
 
       <div className="flex flex-col space-y-5 justify-center mx-10 mt-10">
         {filteredTodos.map((todo: Todo, index) => (
-          <TodoItem key={index} todo={todo} checkItem={checkItem}/>
+          <TodoItem key={index} todo={todo} checkItem={checkItem} />
         ))}
       </div>
     </>
