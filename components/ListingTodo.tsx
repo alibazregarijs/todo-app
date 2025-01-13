@@ -4,13 +4,14 @@ import Checkbox from "@mui/material/Checkbox";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import axios from "axios";
+import {type Todo} from "@/index"
 
 const filters = ["All", "Open", "Closed", "Archived"];
 
 export const ListingTodo = () => {
   const [activeFilter, setActiveFilter] = useState("All");
-  const [todos, setTodos] = useState([]);
-  const [filteredTodos, setFilteredTodos] = useState([]);
+  const [todos, setTodos] = useState<Todo[]>([]);
+  const [filteredTodos, setFilteredTodos] = useState<Todo[]>([]);
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<Error | null>(null);
 
@@ -36,19 +37,19 @@ export const ListingTodo = () => {
     fetchData(); // Fetch data once on mount
   }, []); // Empty dependency array to run once on mount
 
-  const filterTodos = (filter: string, todos: any[]) => {
+  const filterTodos = (filter: string, todos: Todo[]) => {
     startTransition(() => {
-      let filtered: any = todos;
+      let filtered = todos;
 
       // Apply filtering logic based on the active filter
       if (filter === "All") {
         filtered = todos;
       } else if (filter === "Open") {
-        filtered = todos.filter((todo: any) => !todo.is_completed);
+        filtered = todos.filter((todo: Todo) => !todo.is_completed);
       } else if (filter === "Closed") {
-        filtered = todos.filter((todo: any) => todo.is_completed);
+        filtered = todos.filter((todo: Todo) => todo.is_completed);
       } else if (filter === "Archived") {
-        filtered = todos.filter((todo: any) => todo.is_archived); // Assuming archived is a field
+        filtered = todos.filter((todo: Todo) => todo.is_archived); // Assuming archived is a field
       }
 
       setFilteredTodos(filtered); // Set filtered todos and limit to 4
@@ -57,7 +58,9 @@ export const ListingTodo = () => {
 
   const handleFilteration = (filter: string) => {
     setActiveFilter(filter); // Set the active filter immediately
-    filterTodos(filter, todos); // Apply the filter immediately
+    if (todos) {
+      filterTodos(filter, todos); // Apply the filter immediately
+    }
   };
 
   // Use the pre-calculated counts for each filter
@@ -66,24 +69,24 @@ export const ListingTodo = () => {
     if (filter === "All") {
       return todos.length;
     } else if (filter === "Open") {
-      return todos.filter((todo: any) => !todo.is_completed).length; // Open means is_completed is false
+      return todos.filter((todo: Todo) => !todo.is_completed).length; // Open means is_completed is false
     } else if (filter === "Closed") {
-      return todos.filter((todo: any) => todo.is_completed).length; // Closed means is_completed is true
+      return todos.filter((todo: Todo) => todo.is_completed).length; // Closed means is_completed is true
     } else if (filter === "Archived") {
-      return todos.filter((todo: any) => todo.is_archived).length;
+      return todos.filter((todo: Todo) => todo.is_archived).length;
     }
     return 0;
   };
 
-  const checkItem = async (id: number) => {
+  const checkItem = async (id: string,is_completed: boolean) => {
     todos
-      .filter((todo: any) => todo._id === id)
-      .map((todo: any) => {
+      .filter((todo: Todo) => todo._id === id)
+      .map((todo: Todo) => {
         todo.is_completed = !todo.is_completed;
       });
     setTodos([...todos]);
     const updateTodo = async () => {
-      const updatedData = { is_completed: true };
+      const updatedData = { is_completed: !is_completed };
       try {
         const response = await axios.put(
           `http://frontendtest.ideallco.com/api/todos/update/${id}`,
@@ -133,7 +136,7 @@ export const ListingTodo = () => {
       </div>
 
       <div className="flex flex-col space-y-5 justify-center mx-10 mt-10">
-        {filteredTodos.map((todo: any, index) => (
+        {filteredTodos.map((todo: Todo, index) => (
           <div
             key={index}
             className="flex flex-col bg-white rounded-lg w-full max-w-md p-5"
@@ -153,7 +156,7 @@ export const ListingTodo = () => {
               </div>
               <div className="flex">
                 <Checkbox
-                  onClick={() => checkItem(todo?._id)}
+                  onClick={() => checkItem(todo?._id,todo?.is_completed)}
                   size="medium"
                   sx={{
                     color: "#D9D9D9",
