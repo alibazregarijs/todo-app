@@ -1,10 +1,16 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { getDateString } from "@/lib/utils";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
+import { buttonStyles } from "@/lib/utils";
+import CustomModal from "@/components/CustomModal";
 
 const CreateTask = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
   return (
     <div>
       <div className="flex justify-around items-center mt-10">
@@ -16,20 +22,13 @@ const CreateTask = () => {
         </div>
         <div className="flex ">
           <Button
+            onClick={handleOpenModal}
             startIcon={<AddIcon />}
-            sx={{
-              backgroundColor: "#0760FB1A",
-              borderRadius: "10px",
-              width: "125px",
-              height: "40px",
-              color: "#0760FB",
-              fontSize: "14px",
-              lineHeight: "21px",
-              fontWeight: "500",
-            }}
+            sx={buttonStyles}
           >
             New Task
           </Button>
+          <CustomModal open={isModalOpen} onClose={handleCloseModal} />
         </div>
       </div>
     </div>

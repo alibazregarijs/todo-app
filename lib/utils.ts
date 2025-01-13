@@ -13,12 +13,19 @@ export const getHoursAndMinutes = (dateString: string): string => {
   const date = new Date(dateString);
 
   // Extract hours and minutes from the date object
-  const hours = date.getUTCHours().toString().padStart(2, '0'); // Get hours in 2-digit format
-  const minutes = date.getUTCMinutes().toString().padStart(2, '0'); // Get minutes in 2-digit format
+  const hours = date.getUTCHours().toString().padStart(2, "0"); // Get hours in 2-digit format
+  const minutes = date.getUTCMinutes().toString().padStart(2, "0"); // Get minutes in 2-digit format
 
   return `${hours}:${minutes}`;
 };
 
-// Example usage:
-const time = getHoursAndMinutes("2025-01-04T15:52:00.000Z");
-console.log(time); // Output: "15:52"
+export const buttonStyles = {
+  backgroundColor: "#0760FB1A",
+  borderRadius: "10px",
+  width: "125px",
+  height: "40px",
+  color: "#0760FB",
+  fontSize: "14px",
+  lineHeight: "21px",
+  fontWeight: "500",
+};
