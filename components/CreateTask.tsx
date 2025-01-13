@@ -3,7 +3,8 @@ import React from "react";
 import { getDateString } from "@/lib/utils";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
-import { styledButton as StyledButton } from "@/components/Button";
+
+const filters = ["All", "Open", "Closed", "Archived"];
 
 const CreateTask = () => {
   return (
@@ -33,40 +34,34 @@ const CreateTask = () => {
           </Button>
         </div>
       </div>
-      <div className="flex justify-center h-[21px] items-center mt-10 space-x-[19px]">
-        <div className="flex justify-center items-center space-x-[5px]">
-          <h3 className="font-semibold text-sm text-first-blue-color leading-[21px]">
-            All
-          </h3>
-          <p className="bg-first-blue-color text-center text-[10px] text-white font-medium leading-[15px] rounded-full w-5 h-[15px]">
-            35
-          </p>
-        </div>
-        <div className="border-l-[1px] border-second-gray-color h-full "></div>
-        <div className="flex justify-center items-center space-x-[5px]">
-          <h3 className="font-semibold text-sm text-second-gray-color leading-[21px]">
-            Open
-          </h3>
-          <p className="bg-first-gray-color text-center text-[10px] text-white font-medium leading-[15px] rounded-full w-5 h-[15px]">
-            35
-          </p>
-        </div>
-        <div className="flex justify-center items-center space-x-[5px]">
-          <h3 className="font-semibold text-sm text-second-gray-color leading-[21px]">
-            Closed
-          </h3>
-          <p className="bg-first-gray-color text-center text-[10px] text-white font-medium leading-[15px] rounded-full w-5 h-[15px]">
-            35
-          </p>
-        </div>
-        <div className="flex justify-center items-center space-x-[5px]">
-          <h3 className="font-semibold text-sm text-second-gray-color leading-[21px]">
-            Archived
-          </h3>
-          <p className="bg-first-gray-color text-center text-[10px] text-white font-medium leading-[15px] rounded-full w-5 h-[15px]">
-            35
-          </p>
-        </div>
+      <div className="flex justify-center items-center mt-10 space-x-[19px]">
+        {filters.map((filter, index) => (
+          <React.Fragment key={index}>
+            <div className="flex justify-center items-center space-x-[5px]">
+              <h3
+                className={`font-semibold text-sm ${
+                  filter === "All" || index === 0
+                    ? "text-first-blue-color"
+                    : "text-second-gray-color"
+                } leading-[21px]`}
+              >
+                {filter}
+              </h3>
+              <p
+                className={`${
+                  filter === "All" || index === 0
+                    ? "bg-first-blue-color"
+                    : "bg-second-gray-color"
+                } text-center text-[10px] text-white font-medium leading-[15px] rounded-full w-5 h-[15px]`}
+              >
+                35
+              </p>
+            </div>
+            {filter === "All" && index === 0 && (
+              <div className="h-5 border-l-[2px] border-second-gray-color mx-[10px]"></div>
+            )}
+          </React.Fragment>
+        ))}
       </div>
     </div>
   );
