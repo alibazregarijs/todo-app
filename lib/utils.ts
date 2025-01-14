@@ -1,3 +1,5 @@
+import { createTheme } from "@mui/material";
+
 export const getDateString = () => {
   const date = new Date();
 
@@ -29,3 +31,35 @@ export const buttonStyles = {
   lineHeight: "21px",
   fontWeight: "500",
 };
+
+
+
+export const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#0760FB", // first-blue-color
+    },
+    grey: {
+      100: "#D9D9D9", // first-gray-color
+      200: "#9F9F9F", // second-gray-color
+    },
+  },
+  components: {
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          "& .MuiInputBase-root": {
+            fontSize: "0.875rem",
+          },
+        },
+      },
+    },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          fontSize: "0.875rem",
+        },
+      },
+    },
+  },
+});

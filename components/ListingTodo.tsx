@@ -7,9 +7,10 @@ import { fetchTodos } from "@/store/TodoSlice";
 import TodoItem from "./TodoItem";
 import Spinner from "@/components/Spinner";
 import Button from "@mui/material/Button";
+import { type Todo } from "@/index";
+
 
 const filters = ["All", "Open", "Closed", "Archived"];
-
 export const ListingTodo = () => {
   const dispatch = useDispatch<AppDispatch>();
 
@@ -94,8 +95,8 @@ export const ListingTodo = () => {
 
       {/*  listing todos  */}
       <div className="flex flex-col space-y-5 justify-center mx-10 mt-10">
-        {currentTodos.map((todo: any) => (
-          <TodoItem key={todo._id} todo={todo} />
+        {currentTodos.map((todo) => (
+          <TodoItem key={todo._id} todo={todo as Todo} />
         ))}
       </div>
 

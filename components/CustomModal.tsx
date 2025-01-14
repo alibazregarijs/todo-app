@@ -6,7 +6,7 @@ import {
   TextField,
   Button,
   ThemeProvider,
-  createTheme,
+  useMediaQuery,
 } from "@mui/material";
 import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { Dayjs } from "dayjs";
@@ -14,24 +14,9 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/store/store";
 import { createTodo } from "@/store/TodoSlice";
-
+import { theme } from "@/lib/utils";
+import { type CustomModalProps } from "@/index";
 // Create a custom theme with the specified colors
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#0760FB", // first-blue-color
-    },
-    grey: {
-      100: "#D9D9D9", // first-gray-color
-      200: "#9F9F9F", // second-gray-color
-    },
-  },
-});
-
-interface CustomModalProps {
-  open: boolean;
-  onClose: () => void;
-}
 
 const CustomModal: React.FC<CustomModalProps> = ({ open, onClose }) => {
   const [title, setTitle] = useState("");
@@ -41,13 +26,16 @@ const CustomModal: React.FC<CustomModalProps> = ({ open, onClose }) => {
 
   const dispatch = useDispatch<AppDispatch>();
 
+  // Use Material-UI's useMediaQuery hook to determine screen size
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (startTime && endTime) {
       // Format dates to ISO 8601
-      const formattedStartTime = startTime.toISOString(); // "2025-01-04T09:00:00.000Z"
-      const formattedEndTime = endTime.toISOString(); // "2025-01-04T10:00:00.000Z"
+      const formattedStartTime = startTime.toISOString();
+      const formattedEndTime = endTime.toISOString();
 
       const newTodo = {
         title,
@@ -60,7 +48,14 @@ const CustomModal: React.FC<CustomModalProps> = ({ open, onClose }) => {
         .unwrap()
         .then(() => {
           console.log("Todo created successfully");
-          onClose();
+
+          // Reset the form fields after successful submission
+          setTitle(""); // Reset title field
+          setDescription(""); // Reset description field
+          setStartTime(null); // Reset start time
+          setEndTime(null); // Reset end time
+
+          onClose(); // Close the modal after submission
         })
         .catch((err) => {
           console.error("Error creating todo:", err);
@@ -83,15 +78,19 @@ const CustomModal: React.FC<CustomModalProps> = ({ open, onClose }) => {
             sx={{
               position: "absolute",
               top: "50%",
-              left: "50%",
+              left: isMobile ? "40%" : "50%",
               transform: "translate(-50%, -50%)",
-              width: 400,
+              width: isMobile ? "100%" : "50%",
+              maxWidth: isMobile ? "350px" : "600px",
+              height: isMobile ? "600px" : "auto",
+              maxHeight: "90vh",
               bgcolor: "grey.100",
               border: "2px solid",
               borderColor: "grey.200",
               boxShadow: 24,
               p: 4,
               borderRadius: 2,
+              overflowY: "auto",
             }}
           >
             <Typography
@@ -132,9 +131,10 @@ const CustomModal: React.FC<CustomModalProps> = ({ open, onClose }) => {
                     fullWidth: true,
                     margin: "normal",
                     required: true,
+                    size: isMobile ? "small" : "medium",
                   },
                   popper: {
-                    className: "custom-popper",
+                    className: "custom-popper_start",
                   },
                 }}
               />
@@ -147,9 +147,10 @@ const CustomModal: React.FC<CustomModalProps> = ({ open, onClose }) => {
                     fullWidth: true,
                     margin: "normal",
                     required: true,
+                    size: isMobile ? "small" : "medium",
                   },
                   popper: {
-                    className: "custom-popper",
+                    className: "custom-popper_end",
                   },
                 }}
               />

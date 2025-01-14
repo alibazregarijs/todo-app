@@ -6,24 +6,21 @@
   height: 60px; /* Adjust input height */
 }
 
-.custom-popper .MuiPaper-root {
+.custom-popper_start .MuiPaper-root {
   position: absolute;
-  top: -300;
-  width: 500px; /* Adjust popper width */
-  height: 400px; /* Adjust popper height */
+  top: -210px; /* Adjust popper positioning */
+  width: 500px; /* Width of the popper */
+  left: -60;
+  height: 874px; /* Height of the popper */
+  overflow-y: scroll; /* Add scrolling for overflow */
+}
+
+.custom-popper_end .MuiPaper-root {
+  position: absolute;
+  top: -280px; /* Adjust popper positioning */
+  width: 500px; /* Width of the popper */
+  left: -60;
+  height: 874px; /* Height of the popper */
   overflow-y: auto; /* Add scrolling for overflow */
 }
 
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
-.swiper-pagination-bullet-active {
-  background-color: #000 !important;
-}
-
-/* Hide scrollbar for IE, Edge and Firefox */
-.hide-scrollbar {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
-}
