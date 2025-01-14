@@ -11,6 +11,9 @@ import {
 import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { Dayjs } from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/store/store";
+import { createTodo } from "@/store/TodoSlice";
 
 // Create a custom theme with the specified colors
 const theme = createTheme({
@@ -36,11 +39,36 @@ const CustomModal: React.FC<CustomModalProps> = ({ open, onClose }) => {
   const [startTime, setStartTime] = useState<Dayjs | null>(null);
   const [endTime, setEndTime] = useState<Dayjs | null>(null);
 
+  
+  const dispatch = useDispatch<AppDispatch>();
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log("Submitted:", { title, description, startTime, endTime });
-    onClose();
+
+    if (startTime && endTime) {
+      // Format dates to ISO 8601
+      const formattedStartTime = startTime.toISOString(); // "2025-01-04T09:00:00.000Z"
+      const formattedEndTime = endTime.toISOString(); // "2025-01-04T10:00:00.000Z"
+
+      const newTodo = {
+        title,
+        description,
+        start_date: formattedStartTime,
+        end_date: formattedEndTime,
+      };
+
+      dispatch(createTodo(newTodo))
+      .unwrap()
+      .then(() => {
+        console.log("Todo created successfully");
+        onClose();
+      })
+      .catch((err) => {
+        console.error("Error creating todo:", err);
+      });
+    } else {
+      console.log("Start time or end time is missing");
+    }
   };
 
   return (

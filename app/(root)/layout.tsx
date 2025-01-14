@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import {  Poppins } from "next/font/google";
 import "@/style/globals.css";
+import ClientReduxProvider from "@/app/(root)/ClientReduxProvider";
 
 const geistPoppins = Poppins({
   subsets: ["latin"],
@@ -23,7 +24,9 @@ export default function RootLayout({
       <body
         className={`${geistPoppins.className} bg-slate-200`}
       >
-        {children}
+        <main>
+          <ClientReduxProvider>{children}</ClientReduxProvider>
+        </main>
       </body>
     </html>
   );
