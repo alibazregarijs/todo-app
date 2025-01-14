@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import {  Poppins } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "@/style/globals.css";
 import ClientReduxProvider from "@/app/(root)/ClientReduxProvider";
 
@@ -21,9 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistPoppins.className} bg-slate-200`}
-      >
+      <body className={`${geistPoppins.className} bg-slate-200`}>
         <main>
           <ClientReduxProvider>{children}</ClientReduxProvider>
         </main>
