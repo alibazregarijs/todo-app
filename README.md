@@ -1,4 +1,4 @@
-git clone https://github.com/your-username/todo-app.git
+https://github.com/alibazregarijs/todo-app.git
 
 cd todo-app
 npm install
