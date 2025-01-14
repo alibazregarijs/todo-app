@@ -8,8 +8,22 @@
 
 .custom-popper .MuiPaper-root {
   position: absolute;
-  top:-300;
+  top: -300;
   width: 500px; /* Adjust popper width */
   height: 400px; /* Adjust popper height */
   overflow-y: auto; /* Add scrolling for overflow */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.swiper-pagination-bullet-active {
+  background-color: #000 !important;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }

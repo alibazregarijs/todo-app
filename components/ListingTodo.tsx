@@ -1,21 +1,26 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/store/store";
-import { fetchTodos, updateTodoStatus } from "@/store/TodoSlice";
+import { fetchTodos } from "@/store/TodoSlice";
 import TodoItem from "./TodoItem";
 import Spinner from "@/components/Spinner";
+import Button from "@mui/material/Button";
 
 const filters = ["All", "Open", "Closed", "Archived"];
 
 export const ListingTodo = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  // Fetch todos and other state from Redux
-  const { todos, status, error } = useSelector((state: RootState) => state.todos);
+  const { todos, status, error } = useSelector(
+    (state: RootState) => state.todos
+  );
 
-  const [activeFilter, setActiveFilter] = React.useState("All");
+  const [currentPage, setCurrentPage] = useState(1);
+  const todosPerPage = 3;
+
+  const [activeFilter, setActiveFilter] = useState("All");
 
   useEffect(() => {
     if (status === "idle") {
@@ -23,7 +28,8 @@ export const ListingTodo = () => {
     }
   }, [status, dispatch]);
 
-  const applyFilter = (filter: string) => {
+  // Using useCallback for applyFilter
+  const applyFilter = useCallback((filter: string) => {
     switch (filter) {
       case "Open":
         return todos.filter((todo) => !todo.is_completed);
@@ -34,20 +40,27 @@ export const ListingTodo = () => {
       default:
         return todos;
     }
-  };
+  }, [todos]); // Dependent on todos array
 
   const filteredTodos = applyFilter(activeFilter);
+
+  const filteredTodosReversed = [...filteredTodos].reverse(); // Reverse a copy of filteredTodos
+  const indexOfLastTodo = currentPage * todosPerPage;
+  const indexOfFirstTodo = Math.max(0, indexOfLastTodo - todosPerPage); // Adjust for potential out-of-bounds
+  const currentTodos = filteredTodosReversed.slice(indexOfFirstTodo, indexOfLastTodo);
+
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
 
   const handleFilteration = (filter: string) => {
     setActiveFilter(filter);
   };
 
-  const handleCheckItem = (id: string, is_completed: boolean) => {
-    dispatch(updateTodoStatus({ id, is_completed: !is_completed }));
-  };
-
   if (status === "loading") return <Spinner loading={true} />;
   if (status === "failed") return <p>Error: {error}</p>;
+
+  const totalPages = Math.ceil(filteredTodos.length / todosPerPage);
 
   return (
     <>
@@ -79,14 +92,34 @@ export const ListingTodo = () => {
         ))}
       </div>
 
+      {/*  listing todos  */}
       <div className="flex flex-col space-y-5 justify-center mx-10 mt-10">
-        {filteredTodos.map((todo:any) => (
-          <TodoItem
-            key={todo._id}
-            todo={todo}
-            checkItem={() => handleCheckItem(todo._id, todo.is_completed)}
-          />
+        {currentTodos.map((todo: any) => (
+          <TodoItem key={todo._id} todo={todo} />
         ))}
+      </div>
+
+      {/* Pagination Controls */}
+      <div className="flex justify-center space-x-8 mt-6">
+        <Button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="px-4 py-2 border rounded"
+        >
+          Previous
+        </Button>
+        <div className="flex items-center">
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+        </div>
+        <Button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages || totalPages === 0}
+          className="px-4 py-2 border rounded"
+        >
+          Next
+        </Button>
       </div>
     </>
   );

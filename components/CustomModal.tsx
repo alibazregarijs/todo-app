@@ -39,7 +39,6 @@ const CustomModal: React.FC<CustomModalProps> = ({ open, onClose }) => {
   const [startTime, setStartTime] = useState<Dayjs | null>(null);
   const [endTime, setEndTime] = useState<Dayjs | null>(null);
 
-  
   const dispatch = useDispatch<AppDispatch>();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -58,14 +57,14 @@ const CustomModal: React.FC<CustomModalProps> = ({ open, onClose }) => {
       };
 
       dispatch(createTodo(newTodo))
-      .unwrap()
-      .then(() => {
-        console.log("Todo created successfully");
-        onClose();
-      })
-      .catch((err) => {
-        console.error("Error creating todo:", err);
-      });
+        .unwrap()
+        .then(() => {
+          console.log("Todo created successfully");
+          onClose();
+        })
+        .catch((err) => {
+          console.error("Error creating todo:", err);
+        });
     } else {
       console.log("Start time or end time is missing");
     }
@@ -154,6 +153,7 @@ const CustomModal: React.FC<CustomModalProps> = ({ open, onClose }) => {
                   },
                 }}
               />
+
               <Box sx={{ mt: 2, display: "flex", justifyContent: "flex-end" }}>
                 <Button onClick={onClose} sx={{ mr: 1 }}>
                   Cancel

@@ -60,6 +60,17 @@ export const createTodo = createAsyncThunk(
   }
 );
 
+// Async thunk to delete a todo
+export const deleteTodo = createAsyncThunk(
+  "todos/deleteTodo",
+  async (id: string) => {
+    const response = await axios.delete(
+      `http://frontendtest.ideallco.com/api/todos/delete/${id}`
+    );
+    return id; // Return the id of the deleted todo
+  }
+);
+
 const todosSlice = createSlice({
   name: "todos",
   initialState,
@@ -94,6 +105,13 @@ const todosSlice = createSlice({
       })
       .addCase(createTodo.rejected, (state, action) => {
         state.error = action.error.message || "Failed to create todo";
+      })
+      // Delete Todo
+      .addCase(deleteTodo.fulfilled, (state, action: PayloadAction<string>) => {
+        state.todos = state.todos.filter((todo) => todo._id !== action.payload);
+      })
+      .addCase(deleteTodo.rejected, (state, action) => {
+        state.error = action.error.message || "Failed to delete todo";
       });
   },
 });
